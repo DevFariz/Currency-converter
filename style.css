@@ -116,13 +116,28 @@ body{
     background: #833AE0;
 }
 
-.inp{
+.inp-c{
     width: 255px;
     height: 102px;
     border: 1px solid #E5E5E5;
     border-radius: 3px;
+    outline: none;
+    font-weight: 700;
+    font-size: 36px;
+    line-height: 42px;
+    color: #000000;
+    padding: 11px 14px 5px;
+}
+
+.inp{
+    font-weight: 700;
+    font-size: 36px;
+    line-height: 42px;
+    width: 100%;
+    border: none
 }
 
 .nav-left, .nav-right{
     margin-bottom: 30px;
 }
+
