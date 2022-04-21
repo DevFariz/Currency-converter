@@ -33,3 +33,18 @@ rightTabElements.forEach(element => {
     })
 })
 
+let oneCurValueLeft = document.querySelector(".inp-left__curt");
+let oneCurValueRight = document.querySelector(".inp-right__curt");
+
+fetch("https://api.exchangerate.host/latest?base=USD&symbols=RUB ")
+.then(res => res.json())
+.then(data => {
+    console.log(data)
+    inpRight.value = (inpLeft.value / data.rates.RUB).toFixed(4);
+    inpLeft.addEventListener("keyup", () => {
+        inpLeft.value = inpLeft.value.replace(/,/, ".")
+        inpRight.value = (inpLeft.value / data.rates.RUB).toFixed(4);
+    });
+    oneCurValueLeft.textContent = `1 RUB = ${(1 / data.rates.RUB).toFixed(4)} USD`
+    oneCurValueRight.textContent = `1 USD = ${(data.rates.RUB).toFixed(4)} RUB`
+})
