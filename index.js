@@ -7,41 +7,44 @@ const rightTabElements = document.querySelectorAll(".nav-right__btn");
 const oneCurValueLeft = document.querySelector(".inp-left__curt");
 const oneCurValueRight = document.querySelector(".inp-right__curt");
 
+
+
 // convert value from left input to right one
-function getData(from, to){
-    fetch(`https://api.exchangerate.host/latest?base=${to}&symbols=${from}`)
-    .then(res => res.json())
-    .then(data => {
-        inpRight.value = (inpLeft.value / data.rates[from]).toFixed(4);
-        inpLeft.addEventListener("keyup", () => {
-            inpLeft.value = inpLeft.value.replace(/,/, ".")
-            if(isNaN(inpLeft.value)){
-                inpRight.value = "Invalid data"
-            }else{
-                inpRight.value = (inpLeft.value / data.rates[from]).toFixed(4);
-            }
-        });
-        oneCurValueLeft.textContent = `1 ${from} = ${(1 / data.rates[from]).toFixed(4)} ${to}`
-        oneCurValueRight.textContent = `1 ${to} = ${(data.rates[from]).toFixed(4)} ${from}`
-    })
+function getDataFromLeft(from, to, inp1, inp2){
+    inp1.value = inp1.value.replace(/,/, ".")
+    if(isNaN(inp1.value)){
+        inp2.value = "Invalid data"
+        return;
+    }
+
+    if(from != to){
+        fetch(`https://api.exchangerate.host/latest?base=${to}&symbols=${from}`)
+        .then(res => res.json())
+        .then(data => {
+            inp2.value = (inp1.value / data.rates[from]).toFixed(4);
+            oneCurValueLeft.textContent = `1 ${from} = ${(1 / data.rates[from]).toFixed(4)} ${to}`
+            oneCurValueRight.textContent = `1 ${to} = ${(data.rates[from]).toFixed(4)} ${from}`
+        })
+        .catch(err => alert("Error: " + err))
+    }else{
+        inp2.value = inp1.value;            
+        oneCurValueLeft.textContent = `1 ${from} = 1 ${to}`
+        oneCurValueRight.textContent = `1 ${to} = 1 ${from}`
+    }
 }
 
-
-
-
 //default
-
 inpLeft.value = "100";
-getData('RUB', 'USD')
+getDataFromLeft('RUB', 'USD', inpLeft, inpRight)
 
 // tabs start
-function checkIfContainsClassLeft(){
+function deleteActiveClassLeft(){
     leftTabElements.forEach(el => {
         el.classList.remove(`nav-left__btn_active`);
     })
 }
 
-function checkIfContainsClassRight(){
+function deleteActiveClassRight(){
     rightTabElements.forEach(el => {
         el.classList.remove(`nav-right__btn_active`);
     })
@@ -49,18 +52,24 @@ function checkIfContainsClassRight(){
 
 leftTabElements.forEach(element => {
     element.addEventListener("click", (e) => {
-        checkIfContainsClassLeft();
+        deleteActiveClassLeft();
         e.target.classList.add("nav-left__btn_active");
-        getData(e.target.textContent, document.querySelector(".nav-right__btn_active").textContent)
+        getDataFromLeft(e.target.textContent, document.querySelector(".nav-right__btn_active").textContent, inpLeft, inpRight)
     })
 })
 
 rightTabElements.forEach(element => {
     element.addEventListener("click", (e) => {
-        checkIfContainsClassRight();
+        deleteActiveClassRight();
         e.target.classList.add("nav-right__btn_active");
-        getData(document.querySelector(".nav-left__btn_active").textContent, e.target.textContent)
+        getDataFromLeft(document.querySelector(".nav-left__btn_active").textContent, e.target.textContent, inpRight, inpLeft)        
     })
 })
 
- 
+ inpLeft.addEventListener("keyup", () => {
+     getDataFromLeft(document.querySelector(".nav-left__btn_active").textContent, document.querySelector(".nav-right__btn_active").textContent, inpLeft, inpRight)
+ })
+
+ inpRight.addEventListener("keyup", () => {
+    getDataFromLeft(document.querySelector(".nav-right__btn_active").textContent, document.querySelector(".nav-left__btn_active").textContent, inpRight, inpLeft)
+})
