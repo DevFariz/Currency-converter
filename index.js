@@ -28,8 +28,8 @@ function getDataFromLeft(from, to, inp1, inp2){
         .catch(err => alert("Error: " + err))
     }else{
         inp2.value = inp1.value;            
-        oneCurValueLeft.textContent = `1 ${from} = 1 ${to}`
-        oneCurValueRight.textContent = `1 ${to} = 1 ${from}`
+        oneCurValueLeft.textContent = `1 ${from} = 1 ${to}`;
+        oneCurValueRight.textContent = `1 ${to} = 1 ${from}`;
     }
 }
 
